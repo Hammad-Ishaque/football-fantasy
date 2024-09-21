@@ -1,6 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import User
 import uuid
+
+from django.contrib.auth.models import User
+from django.db import models
 
 
 class AbstractModel(models.Model):
@@ -17,7 +18,7 @@ class Team(AbstractModel):
     capital = models.DecimalField(max_digits=10, decimal_places=2, default=5000000)
     total_value = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    def calculate_total_value(self):
+    def calculate_total_value(self) -> None:
         self.total_value = sum(player.value for player in self.players.all())
         self.save()
 

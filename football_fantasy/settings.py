@@ -11,12 +11,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import List
+
 from envparse import Env
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env: Env = Env(
+    DJANGO_SECRET_KEY={'cast': str, 'default': 'django-insecure-%*^b@e=lrp3&_&vacqtl_0vwv^bp4+4lr30#uymo90(73!9&r='},
     DATABASE_HOST={'cast': str, 'default': 'db'},
     DATABASE_PORT={'cast': str, 'default': '5432'},
     DATABASE_USER={'cast': str, 'default': ''},
@@ -28,12 +32,12 @@ env: Env = Env(
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%*^b@e=lrp3&_&vacqtl_0vwv^bp4+4lr30#uymo90(73!9&r='
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List[str] = []
 
 
 # Application definition
@@ -97,7 +101,7 @@ DATABASES = {
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST'),
         'PORT': env('DATABASE_PORT'),
-    }
+    },
 }
 
 

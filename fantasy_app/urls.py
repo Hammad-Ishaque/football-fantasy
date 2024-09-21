@@ -1,14 +1,16 @@
 from django.urls import path
-from fantasy_app.views import UserRegistrationView
-from fantasy_app.views import UserProfileView
+
+from fantasy_app.views import PlayerBuyView
+from fantasy_app.views import PlayerDetailView
+from fantasy_app.views import PlayerListView
+from fantasy_app.views import PlayerTransferUpdateView
 from fantasy_app.views import TeamDetailView
 from fantasy_app.views import TeamRecalculateValueView
-from fantasy_app.views import PlayerListView
-from fantasy_app.views import PlayerDetailView
-from fantasy_app.views import PlayerTransferUpdateView
-from fantasy_app.views import PlayerBuyView
 from fantasy_app.views import TransactionListView
+from fantasy_app.views import UserProfileView
+from fantasy_app.views import UserRegistrationView
 from fantasy_app.views import UserTransactionListView
+
 
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='user-register'),

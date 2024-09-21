@@ -1,8 +1,14 @@
-from rest_framework import serializers
+from typing import Optional
+
 from django.contrib.auth.models import User
-from fantasy_app.models import Team
+from django.db.models import Model
+
+from rest_framework import serializers
+
 from fantasy_app.models import Player
+from fantasy_app.models import Team
 from fantasy_app.models import Transaction
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -11,16 +17,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password']
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Model:
         user, _ = User.objects.get_or_create(
             email=validated_data['email'],
             defaults={
                 'username': validated_data['username'],
                 'password': validated_data['password'],
-            }
+            },
         )
         Team.objects.get_or_create(user=user, defaults={'name': f"{user.username}'s Team"})
         return user
+
 
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,7 +57,7 @@ class PlayerTransferSerializer(serializers.ModelSerializer):
         fields = ['id', 'is_for_sale', 'sale_price']
         read_only_fields = ['id']
 
-    def validate(self, data):
+    def validate(self, data: dict) -> Optional[dict]:
         if data['is_for_sale'] and not data.get('sale_price'):
             raise serializers.ValidationError('Sale price must be provided when listing a player for sale.')
         return data
