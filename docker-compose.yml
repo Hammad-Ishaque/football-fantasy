@@ -12,6 +12,10 @@ services:
       - .:/app
     networks:
       - fantasy
+    environment:
+      DATABASE_NAME: football_fantasy
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
   db:
     image: postgres:latest
     environment:

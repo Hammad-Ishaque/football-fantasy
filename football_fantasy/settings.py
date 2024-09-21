@@ -19,9 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env: Env = Env(
     DATABASE_HOST={'cast': str, 'default': 'db'},
     DATABASE_PORT={'cast': str, 'default': '5432'},
-    DATABASE_USER={'cast': str, 'default': 'root'},
-    DATABASE_PASSWORD={'cast': str, 'default': 'root'},
-    DATABASE_NAME={'cast': str, 'default': 'football_fantasy'},
+    DATABASE_USER={'cast': str, 'default': ''},
+    DATABASE_PASSWORD={'cast': str, 'default': ''},
+    DATABASE_NAME={'cast': str, 'default': ''},
 )
 
 # Quick-start development settings - unsuitable for production
