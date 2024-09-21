@@ -1,0 +1,28 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "8001:8000"
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - fantasy
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: footbal_fantasy
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    networks:
+      - fantasy
+
+networks:
+  fantasy:
+    driver: bridge
