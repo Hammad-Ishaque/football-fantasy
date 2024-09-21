@@ -4,7 +4,7 @@ services:
     build:
       context: .
     ports:
-      - "8001:8000"
+      - "2000:8000"
     command: /bin/bash -c "python manage.py migrate && python manage.py runserver"
     depends_on:
       - db
@@ -15,7 +15,7 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: footbal_fantasy
+      POSTGRES_DB: football_fantasy
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
     ports:

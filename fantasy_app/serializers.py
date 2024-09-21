@@ -12,12 +12,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
+        user, _ = User.objects.get_or_create(
             email=validated_data['email'],
-            password=validated_data['password'],
+            defaults={
+                'username': validated_data['username'],
+                'password': validated_data['password'],
+            }
         )
-        Team.objects.create(user=user, name=f"{user.username}'s Team")
+        Team.objects.get_or_create(user=user, defaults={'name': f"{user.username}'s Team"})
         return user
 
 class PlayerSerializer(serializers.ModelSerializer):
@@ -50,7 +52,7 @@ class PlayerTransferSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data['is_for_sale'] and not data.get('sale_price'):
-            raise serializers.ValidationError("Sale price must be provided when listing a player for sale.")
+            raise serializers.ValidationError('Sale price must be provided when listing a player for sale.')
         return data
 
 

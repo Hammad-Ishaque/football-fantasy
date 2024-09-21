@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
+from django.db import transaction
 
-from fantasy_app.models import PlayerTransferSerializer
 from fantasy_app.models import Player
 from fantasy_app.models import Transaction
 from fantasy_app.serializers import TransactionSerializer
@@ -12,6 +12,7 @@ from fantasy_app.serializers import UserRegistrationSerializer
 from fantasy_app.serializers import UserProfileSerializer
 from fantasy_app.serializers import TeamSerializer
 from fantasy_app.serializers import PlayerSerializer
+from fantasy_app.serializers import PlayerTransferSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -65,7 +66,6 @@ class PlayerListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Add filtering logic here if needed, e.g., by team or sale status
         return Player.objects.all()
 
 
@@ -96,7 +96,7 @@ class PlayerBuyView(generics.GenericAPIView):
         try:
             player = Player.objects.get(id=player_id)
         except Player.DoesNotExist:
-            return Response({"error": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Player not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         buyer = request.user
         seller = player.team.user
@@ -115,19 +115,22 @@ class PlayerBuyView(generics.GenericAPIView):
         player.team = buyer.team
         player.is_for_sale = False
         player.sale_price = None
+        try:
+            with transaction.atomic():
+                player.save()
+                buyer.save()
+                seller.save()
+                old_team.calculate_total_value()
+                buyer.team.calculate_total_value()
 
-        player.save()
-        buyer.save()
-        seller.save()
-        old_team.calculate_total_value()
-        buyer.team.calculate_total_value()
-
-        Transaction.objects.create(
-            buyer=buyer,
-            seller=seller,
-            player=player,
-            amount=player.sale_price
-        )
+                Transaction.objects.create(
+                    buyer=buyer,
+                    seller=seller,
+                    player=player,
+                    amount=player.sale_price
+                )
+        except Exception:
+            pass
 
         return Response(status=status.HTTP_200_OK)
 
