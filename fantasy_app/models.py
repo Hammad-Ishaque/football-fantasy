@@ -20,7 +20,7 @@ class Team(AbstractModel):
 
     def calculate_total_value(self) -> None:
         self.total_value = sum(player.value for player in self.players.all())
-        self.save()
+        self.save(update_fields=['total_value'])
 
 
 class Player(AbstractModel):

@@ -1,5 +1,15 @@
 version: '3'
 services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: football_fantasy
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    networks:
+      - fantasy
   web:
     build:
       context: .
@@ -16,16 +26,6 @@ services:
       DATABASE_NAME: football_fantasy
       DATABASE_USER: root
       DATABASE_PASSWORD: root
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: football_fantasy
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-    ports:
-      - "5432:5432"
-    networks:
-      - fantasy
 
 networks:
   fantasy:
